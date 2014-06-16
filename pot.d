@@ -34,6 +34,8 @@ class Engine
 	{
 		import std.algorithm, std.array, std.range;
 		
+		if(!checkShift!direction) return;
+		
 		foreach(vector; board.byVector(direction.isVertical))
 		{
 			
@@ -74,6 +76,43 @@ class Engine
 			
 		}
 		insertBox(direction);
+	}
+	
+	// checks to see if shifting towards a certain direction is a valid move
+	// a shift is only valid if there is an existing box that will move
+	bool checkShift(Direction direction)()
+	{
+		import std.range;
+		
+		foreach(vector; board.byVector(direction.isVertical))
+		{
+			bool foundEmpty;
+			int lastBox;
+			
+			static if(direction.isNegative)
+			{
+				alias vector vectorNormalized;
+			}
+			else
+			{
+				auto vectorNormalized = vector.retro;
+			}
+			
+			foreach(box; vectorNormalized)
+			{
+				if(box > 0)
+				{
+					if(foundEmpty) return true;
+					if(lastBox == box) return true;
+					lastBox = box;
+				}
+				else if(box == 0)
+				{
+					foundEmpty = true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	void insertBox(Direction direction)
@@ -125,7 +164,7 @@ struct Board
 			take(edgeLength);
 	}
 	
-	auto byVector(bool isVertical = true)
+	auto byVector(bool isVertical)
 	{
 		import std.range;
 		return iota(edgeLength).map!(i => getVector(isVertical, i));
