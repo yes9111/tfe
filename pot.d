@@ -48,7 +48,6 @@ class Engine
 			
 			bool alreadyCollapsed = false;
 			auto collapsed = (cast(int[])[]).reduce!((sofar, x){
-				
 				if(sofar.length>0 && sofar[$-1] == x && !alreadyCollapsed)
 				{
 					sofar[$-1] *= 2;
@@ -80,13 +79,11 @@ class Engine
 	void insertBox(Direction direction)
 	{
 		import std.random, std.range;
-		debug import std.stdio;
 		
 		bool getVertical = !direction.isVertical;
 		int vectorIndex = direction.isNegative ? board.edgeLength-1 : 0;
 		
 		auto emptyBoxes = board.getVector(getVertical, vectorIndex).filter!(a => a == 0);
-		debug writefln("Num empty boxes: %d", emptyBoxes.array.length);
 		emptyBoxes.drop(uniform(0, emptyBoxes.array.length)).front = uniform(1, 3)*2;
 	}
 	
@@ -104,7 +101,7 @@ class Engine
 		writefln("Current board (%d X %d)", board.edgeLength, board.edgeLength);
 		foreach(row; board.byVector(false))
 		{
-			writeln(row);
+			writefln("%(%4d\t%)", row);
 		}
 	}
 }
