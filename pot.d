@@ -26,8 +26,8 @@ class Engine
 	
 	void initializeRandom()
 	{
-		insertBox(Direction.Left);
-		insertBox(Direction.Up);
+		insertBox();
+		insertBox();
 	}
 	
 	void shift(Direction direction)()
@@ -75,7 +75,7 @@ class Engine
 			}
 			
 		}
-		insertBox(direction);
+		insertBox();
 	}
 	
 	// checks to see if shifting towards a certain direction is a valid move
@@ -115,14 +115,11 @@ class Engine
 		return false;
 	}
 	
-	void insertBox(Direction direction)
+	void insertBox()
 	{
 		import std.random, std.range;
 		
-		bool getVertical = !direction.isVertical;
-		int vectorIndex = direction.isNegative ? board.edgeLength-1 : 0;
-		
-		auto emptyBoxes = board.getVector(getVertical, vectorIndex).filter!(a => a == 0);
+    auto emptyBoxes = board.data.filter!(a => a == 0);
 		emptyBoxes.drop(uniform(0, emptyBoxes.array.length)).front = uniform(1, 3)*2;
 	}
 	
@@ -148,7 +145,7 @@ class Engine
 struct Board
 {
 	private uint[] data;
-	private immutable int edgeLength;
+	private const size_t edgeLength;
 	
 	this(size_t boardSize)
 	{
@@ -156,7 +153,7 @@ struct Board
 		edgeLength = boardSize;
 	}
 	
-	auto getVector(bool isVertical, int i)
+	auto getVector(bool isVertical, size_t i)
 	{
 		import std.range;
 		return data.drop(isVertical? i : i*edgeLength).

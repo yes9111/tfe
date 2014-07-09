@@ -1,3 +1,5 @@
+#!/usr/bin/env rdmd
+
 module main;
 
 void main(string[] args){
